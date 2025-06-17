@@ -9,6 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chat_rooms: {
+        Row: {
+          created_at: string | null
+          id: string
+          trip_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          trip_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          trip_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_rooms_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: true
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          chat_room_id: string | null
+          content: string
+          created_at: string | null
+          id: string
+          sender_id: string | null
+        }
+        Insert: {
+          chat_room_id?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          sender_id?: string | null
+        }
+        Update: {
+          chat_room_id?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_chat_room_id_fkey"
+            columns: ["chat_room_id"]
+            isOneToOne: false
+            referencedRelation: "chat_rooms"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null

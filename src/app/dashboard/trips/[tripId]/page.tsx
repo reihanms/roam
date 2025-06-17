@@ -1,5 +1,6 @@
 import { manageTripRequestAction, joinTripAction } from "@/app/actions";
 import DashboardNavbar from "@/components/dashboard-navbar";
+import Chat from "@/components/chat";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -75,6 +76,8 @@ export default async function TripDetailsPage({
   const approvedParticipants = typedTrip.participants.filter(
     (p) => p.status === "approved",
   );
+  const isApprovedParticipant = userParticipation?.status === "approved";
+  const hasAccessToChat = isHost || isApprovedParticipant;
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -228,6 +231,12 @@ export default async function TripDetailsPage({
 
             {/* Sidebar */}
             <div className="space-y-6">
+              {/* Chat Component */}
+              <Chat
+                tripId={params.tripId}
+                currentUserId={user.id}
+                isParticipant={hasAccessToChat}
+              />
               {/* Approved Participants */}
               {approvedParticipants.length > 0 && (
                 <Card>

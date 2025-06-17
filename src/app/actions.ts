@@ -334,6 +334,34 @@ export const manageTripRequestAction = async (formData: FormData) => {
     );
   }
 
+  // If approving the first participant, create a chat room
+  if (action === "approve") {
+    try {
+      // Check if this is the first approved participant
+      const { data: approvedCount } = await supabase
+        .from("trip_participants")
+        .select("id", { count: "exact" })
+        .eq("trip_id", tripId)
+        .eq("status", "approved");
+
+      // Create chat room if this is the first approval and no chat room exists
+      if (approvedCount && approvedCount.length === 1) {
+        const { data: existingRoom } = await supabase
+          .from("chat_rooms")
+          .select("id")
+          .eq("trip_id", tripId)
+          .single();
+
+        if (!existingRoom) {
+          await supabase.from("chat_rooms").insert({ trip_id: tripId });
+        }
+      }
+    } catch (error) {
+      console.error("Error creating chat room:", error);
+      // Don't fail the approval if chat room creation fails
+    }
+  }
+
   return encodedRedirect(
     "success",
     `/dashboard/trips/${tripId}`,
@@ -432,4 +460,117 @@ export const searchTripsAction = async (formData: FormData) => {
   }
 
   return { trips: trips || [], error: null };
+};
+
+export const createChatRoomAction = async (tripId: string) => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    throw new Error("Authentication required");
+  }
+
+  // Check if user is host of the trip
+  const { data: trip } = await supabase
+    .from("trips")
+    .select("host_id")
+    .eq("id", tripId)
+    .single();
+
+  if (!trip || trip.host_id !== user.id) {
+    throw new Error("Only trip host can create chat room");
+  }
+
+  // Check if chat room already exists
+  const { data: existingRoom } = await supabase
+    .from("chat_rooms")
+    .select("id")
+    .eq("trip_id", tripId)
+    .single();
+
+  if (existingRoom) {
+    return existingRoom;
+  }
+
+  // Create new chat room
+  const { data: chatRoom, error } = await supabase
+    .from("chat_rooms")
+    .insert({ trip_id: tripId })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating chat room:", error);
+    throw new Error("Failed to create chat room");
+  }
+
+  return chatRoom;
+};
+
+export const sendMessageAction = async (formData: FormData) => {
+  const chatRoomId = formData.get("chat_room_id")?.toString();
+  const content = formData.get("content")?.toString();
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return encodedRedirect("error", "/dashboard", "Authentication required");
+  }
+
+  if (!chatRoomId || !content?.trim()) {
+    return encodedRedirect("error", "/dashboard", "Invalid message data");
+  }
+
+  // Verify user has access to this chat room (is participant or host)
+  const { data: chatRoom } = await supabase
+    .from("chat_rooms")
+    .select(
+      `
+      trip_id,
+      trip:trips(
+        host_id,
+        participants:trip_participants(
+          user_id,
+          status
+        )
+      )
+    `,
+    )
+    .eq("id", chatRoomId)
+    .single();
+
+  if (!chatRoom?.trip) {
+    return encodedRedirect("error", "/dashboard", "Chat room not found");
+  }
+
+  const isHost = chatRoom.trip.host_id === user.id;
+  const isApprovedParticipant = chatRoom.trip.participants?.some(
+    (p: any) => p.user_id === user.id && p.status === "approved",
+  );
+
+  if (!isHost && !isApprovedParticipant) {
+    return encodedRedirect("error", "/dashboard", "Access denied");
+  }
+
+  const { error } = await supabase.from("messages").insert({
+    chat_room_id: chatRoomId,
+    sender_id: user.id,
+    content: content.trim(),
+  });
+
+  if (error) {
+    console.error("Error sending message:", error);
+    return encodedRedirect("error", "/dashboard", "Failed to send message");
+  }
+
+  return { success: true };
 };
