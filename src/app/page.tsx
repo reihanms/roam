@@ -207,6 +207,55 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Trip Discovery Section */}
+      <section className="py-20 bg-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Discover Amazing Trips</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
+              Find your perfect travel companions and join exciting adventures
+              around the world.
+            </p>
+
+            {/* Search Bar */}
+            <div className="max-w-2xl mx-auto mb-8">
+              <form action="/trips" method="GET" className="flex gap-4">
+                <div className="flex-1">
+                  <input
+                    type="text"
+                    name="destination"
+                    placeholder="Search destinations..."
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="px-8 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+                >
+                  Search
+                </button>
+              </form>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="/trips"
+                className="inline-flex items-center px-6 py-3 text-emerald-600 bg-white border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
+              >
+                Browse All Trips
+              </a>
+              <a
+                href="/explore"
+                className="inline-flex items-center px-6 py-3 text-emerald-600 bg-white border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
+              >
+                <MapPin className="mr-2 w-4 h-4" />
+                Explore Map
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4 text-center">

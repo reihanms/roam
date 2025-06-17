@@ -396,3 +396,40 @@ export const joinTripAction = async (formData: FormData) => {
     "Join request sent successfully",
   );
 };
+
+export const searchTripsAction = async (formData: FormData) => {
+  const destination = formData.get("destination")?.toString() || "";
+  const sortBy = formData.get("sort_by")?.toString() || "created_at";
+
+  const supabase = await createClient();
+
+  let query = supabase
+    .from("trips")
+    .select(
+      `
+      *,
+      host:users!trips_host_id_fkey(full_name, name),
+      participants:trip_participants(id, status)
+    `,
+    )
+    .gte("start_date", new Date().toISOString().split("T")[0]);
+
+  if (destination.trim()) {
+    query = query.ilike("destination", `%${destination}%`);
+  }
+
+  if (sortBy === "start_date") {
+    query = query.order("start_date", { ascending: true });
+  } else {
+    query = query.order("created_at", { ascending: false });
+  }
+
+  const { data: trips, error } = await query.limit(20);
+
+  if (error) {
+    console.error("Error searching trips:", error);
+    return { trips: [], error: "Failed to search trips" };
+  }
+
+  return { trips: trips || [], error: null };
+};
