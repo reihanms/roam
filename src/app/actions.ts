@@ -215,3 +215,184 @@ export const updateProfileAction = async (formData: FormData) => {
 
   return encodedRedirect("success", "/profile", "Profile updated successfully");
 };
+
+export const createTripAction = async (formData: FormData) => {
+  const title = formData.get("title")?.toString();
+  const destination = formData.get("destination")?.toString();
+  const description = formData.get("description")?.toString();
+  const startDate = formData.get("start_date")?.toString();
+  const endDate = formData.get("end_date")?.toString();
+  const budgetMin = parseInt(formData.get("budget_min")?.toString() || "0");
+  const budgetMax = parseInt(formData.get("budget_max")?.toString() || "0");
+  const maxParticipants = parseInt(
+    formData.get("max_participants")?.toString() || "4",
+  );
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return encodedRedirect(
+      "error",
+      "/dashboard/create-trip",
+      "Authentication required",
+    );
+  }
+
+  if (!title || !destination || !startDate || !endDate) {
+    return encodedRedirect(
+      "error",
+      "/dashboard/create-trip",
+      "Title, destination, start date, and end date are required",
+    );
+  }
+
+  const { data: trip, error } = await supabase
+    .from("trips")
+    .insert({
+      title,
+      destination,
+      description,
+      start_date: startDate,
+      end_date: endDate,
+      budget_min: budgetMin || null,
+      budget_max: budgetMax || null,
+      max_participants: maxParticipants,
+      host_id: user.id,
+    })
+    .select()
+    .single();
+
+  if (error) {
+    console.error("Error creating trip:", error);
+    return encodedRedirect(
+      "error",
+      "/dashboard/create-trip",
+      "Failed to create trip",
+    );
+  }
+
+  return redirect(`/dashboard/trips/${trip.id}`);
+};
+
+export const manageTripRequestAction = async (formData: FormData) => {
+  const participantId = formData.get("participant_id")?.toString();
+  const action = formData.get("action")?.toString(); // 'approve' or 'decline'
+  const tripId = formData.get("trip_id")?.toString();
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return encodedRedirect("error", "/dashboard", "Authentication required");
+  }
+
+  if (!participantId || !action || !tripId) {
+    return encodedRedirect(
+      "error",
+      `/dashboard/trips/${tripId}`,
+      "Invalid request",
+    );
+  }
+
+  // Verify user is the host of the trip
+  const { data: trip } = await supabase
+    .from("trips")
+    .select("host_id")
+    .eq("id", tripId)
+    .single();
+
+  if (!trip || trip.host_id !== user.id) {
+    return encodedRedirect(
+      "error",
+      `/dashboard/trips/${tripId}`,
+      "Unauthorized",
+    );
+  }
+
+  const status = action === "approve" ? "approved" : "declined";
+
+  const { error } = await supabase
+    .from("trip_participants")
+    .update({ status })
+    .eq("id", participantId);
+
+  if (error) {
+    console.error("Error updating trip request:", error);
+    return encodedRedirect(
+      "error",
+      `/dashboard/trips/${tripId}`,
+      "Failed to update request",
+    );
+  }
+
+  return encodedRedirect(
+    "success",
+    `/dashboard/trips/${tripId}`,
+    `Request ${action}d successfully`,
+  );
+};
+
+export const joinTripAction = async (formData: FormData) => {
+  const tripId = formData.get("trip_id")?.toString();
+
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  if (authError || !user) {
+    return encodedRedirect("error", "/dashboard", "Authentication required");
+  }
+
+  if (!tripId) {
+    return encodedRedirect("error", "/dashboard", "Invalid trip");
+  }
+
+  // Check if user already has a request for this trip
+  const { data: existingRequest } = await supabase
+    .from("trip_participants")
+    .select("id")
+    .eq("trip_id", tripId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (existingRequest) {
+    return encodedRedirect(
+      "error",
+      `/dashboard/trips/${tripId}`,
+      "You have already requested to join this trip",
+    );
+  }
+
+  const { error } = await supabase.from("trip_participants").insert({
+    trip_id: tripId,
+    user_id: user.id,
+    status: "pending",
+  });
+
+  if (error) {
+    console.error("Error joining trip:", error);
+    return encodedRedirect(
+      "error",
+      `/dashboard/trips/${tripId}`,
+      "Failed to join trip",
+    );
+  }
+
+  return encodedRedirect(
+    "success",
+    `/dashboard/trips/${tripId}`,
+    "Join request sent successfully",
+  );
+};
