@@ -22,12 +22,15 @@ import {
 import { redirect } from "next/navigation";
 import { createClient } from "../../../../../supabase/server";
 import { Tables } from "@/types/supabase";
+import { TripExploreMap } from "@/components/trip-explore-map";
 
 type Trip = Tables<"trips"> & {
   host: Tables<"users"> | null;
   participants: (Tables<"trip_participants"> & {
     user: Tables<"users"> | null;
   })[];
+  latitude: number | null;
+  longitude: number | null;
 };
 
 export default async function TripDetailsPage({
@@ -56,7 +59,7 @@ export default async function TripDetailsPage({
         *,
         user:users(*)
       )
-    `,
+    `
     )
     .eq("id", params.tripId)
     .single();
@@ -68,13 +71,13 @@ export default async function TripDetailsPage({
   const typedTrip = trip as Trip;
   const isHost = user.id === typedTrip.host_id;
   const userParticipation = typedTrip.participants.find(
-    (p) => p.user_id === user.id,
+    (p) => p.user_id === user.id
   );
   const pendingRequests = typedTrip.participants.filter(
-    (p) => p.status === "pending",
+    (p) => p.status === "pending"
   );
   const approvedParticipants = typedTrip.participants.filter(
-    (p) => p.status === "approved",
+    (p) => p.status === "approved"
   );
   const isApprovedParticipant = userParticipation?.status === "approved";
   const hasAccessToChat = isHost || isApprovedParticipant;
@@ -163,7 +166,7 @@ export default async function TripDetailsPage({
                         <p className="text-sm text-muted-foreground">
                           {formatBudget(
                             typedTrip.budget_min,
-                            typedTrip.budget_max,
+                            typedTrip.budget_max
                           )}
                         </p>
                       </div>
@@ -209,22 +212,25 @@ export default async function TripDetailsPage({
               <Card>
                 <CardHeader>
                   <CardTitle>Location</CardTitle>
-                  <CardDescription>
-                    Interactive map view coming soon
-                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-                    <div className="text-center">
-                      <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
-                      <p className="text-muted-foreground">
-                        {typedTrip.destination}
-                      </p>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Interactive map integration coming soon
-                      </p>
+                  {typedTrip.latitude && typedTrip.longitude ? (
+                    <div className="h-64 w-full rounded-lg overflow-hidden">
+                      <TripExploreMap
+                        trips={[typedTrip as any]}
+                        className="h-full w-full border-0"
+                      />
                     </div>
-                  </div>
+                  ) : (
+                    <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
+                      <div className="text-center">
+                        <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-2" />
+                        <p className="text-muted-foreground">
+                          Map data not available
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
@@ -283,7 +289,7 @@ export default async function TripDetailsPage({
                             <p className="text-xs text-muted-foreground">
                               Joined{" "}
                               {new Date(
-                                participant.joined_at || "",
+                                participant.joined_at || ""
                               ).toLocaleDateString()}
                             </p>
                           </div>
@@ -322,7 +328,7 @@ export default async function TripDetailsPage({
                               <p className="text-xs text-muted-foreground">
                                 Requested{" "}
                                 {new Date(
-                                  request.joined_at || "",
+                                  request.joined_at || ""
                                 ).toLocaleDateString()}
                               </p>
                             </div>
@@ -397,3 +403,4 @@ export default async function TripDetailsPage({
     </div>
   );
 }
+

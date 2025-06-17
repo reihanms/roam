@@ -24,7 +24,9 @@ CREATE TABLE IF NOT EXISTS public.trips (
     max_participants integer DEFAULT 4,
     host_id uuid REFERENCES public.users(id) ON DELETE CASCADE,
     created_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
-    updated_at timestamp with time zone DEFAULT timezone('utc'::text, now())
+    updated_at timestamp with time zone DEFAULT timezone('utc'::text, now()),
+    longitude DOUBLE PRECISION,
+    latitude DOUBLE PRECISION
 );
 
 CREATE TABLE IF NOT EXISTS public.trip_participants (

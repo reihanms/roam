@@ -1,3 +1,5 @@
+"use client";
+
 import { createTripAction } from "@/app/actions";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import { Button } from "@/components/ui/button";
@@ -18,19 +20,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { redirect } from "next/navigation";
-import { createClient } from "../../../../supabase/server";
+import { LocationSearch } from "@/components/ui/location-search";
+import { useRef } from "react";
 
-export default async function CreateTripPage() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return redirect("/sign-in");
-  }
+export default function CreateTripPage() {
+  const formRef = useRef<HTMLFormElement>(null);
 
   return (
     <div className="bg-background min-h-screen">
@@ -54,7 +48,11 @@ export default async function CreateTripPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <form action={createTripAction} className="space-y-6">
+              <form
+                ref={formRef}
+                action={createTripAction}
+                className="space-y-6"
+              >
                 <div className="grid grid-cols-1 gap-6">
                   {/* Title */}
                   <div className="space-y-2">
@@ -70,16 +68,24 @@ export default async function CreateTripPage() {
                   {/* Destination */}
                   <div className="space-y-2">
                     <Label htmlFor="destination">Destination *</Label>
-                    <Input
-                      id="destination"
-                      name="destination"
-                      placeholder="e.g., Bangkok, Thailand"
-                      required
+                    <LocationSearch
+                      onLocationSelect={({ coordinates }) => {
+                        if (formRef.current) {
+                          (
+                            formRef.current.elements.namedItem(
+                              "longitude"
+                            ) as HTMLInputElement
+                          ).value = coordinates[1].toString();
+                          (
+                            formRef.current.elements.namedItem(
+                              "latitude"
+                            ) as HTMLInputElement
+                          ).value = coordinates[0].toString();
+                        }
+                      }}
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Note: Geocoding autocomplete will be implemented in a
-                      future update.
-                    </p>
+                    <input type="hidden" name="longitude" />
+                    <input type="hidden" name="latitude" />
                   </div>
 
                   {/* Dates */}
@@ -190,3 +196,4 @@ export default async function CreateTripPage() {
     </div>
   );
 }
+

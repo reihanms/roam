@@ -227,6 +227,8 @@ export const createTripAction = async (formData: FormData) => {
   const maxParticipants = parseInt(
     formData.get("max_participants")?.toString() || "4",
   );
+  const longitude = parseFloat(formData.get("longitude")?.toString() || "0");
+  const latitude = parseFloat(formData.get("latitude")?.toString() || "0");
 
   const supabase = await createClient();
 
@@ -263,6 +265,8 @@ export const createTripAction = async (formData: FormData) => {
       budget_max: budgetMax || null,
       max_participants: maxParticipants,
       host_id: user.id,
+      longitude,
+      latitude,
     })
     .select()
     .single();
@@ -428,6 +432,7 @@ export const joinTripAction = async (formData: FormData) => {
 export const searchTripsAction = async (formData: FormData) => {
   const destination = formData.get("destination")?.toString() || "";
   const sortBy = formData.get("sort_by")?.toString() || "created_at";
+  const viewType = formData.get("view_type")?.toString() || "list"; // 'list' or 'map'
 
   const supabase = await createClient();
 
@@ -459,7 +464,11 @@ export const searchTripsAction = async (formData: FormData) => {
     return { trips: [], error: "Failed to search trips" };
   }
 
-  return { trips: trips || [], error: null };
+  return { 
+    trips: trips || [], 
+    error: null,
+    viewType 
+  };
 };
 
 export const createChatRoomAction = async (tripId: string) => {

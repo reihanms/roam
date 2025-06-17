@@ -20,10 +20,13 @@ import {
 import { createClient } from "../../../supabase/server";
 import { Tables } from "@/types/supabase";
 import Link from "next/link";
+import { ExploreMapSection } from "@/components/explore-map-section";
 
 type Trip = Tables<"trips"> & {
   host: Tables<"users"> | null;
   participants: Tables<"trip_participants">[];
+  latitude: number;
+  longitude: number;
 };
 
 export default async function ExplorePage() {
@@ -34,7 +37,7 @@ export default async function ExplorePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Fetch upcoming trips for the map
+  // Fetch upcoming trips for both map and destinations list
   const { data: trips, error } = await supabase
     .from("trips")
     .select(
@@ -42,7 +45,7 @@ export default async function ExplorePage() {
       *,
       host:users!trips_host_id_fkey(full_name, name),
       participants:trip_participants(id, status)
-    `,
+    `
     )
     .gte("start_date", new Date().toISOString().split("T")[0])
     .order("created_at", { ascending: false })
@@ -60,12 +63,12 @@ export default async function ExplorePage() {
 
   const getAvailableSpots = (trip: Trip) => {
     const approvedParticipants = trip.participants.filter(
-      (p) => p.status === "approved",
+      (p) => p.status === "approved"
     ).length;
     return (trip.max_participants || 4) - approvedParticipants - 1; // -1 for host
   };
 
-  // Group trips by destination for the map view
+  // Group trips by destination for the destinations grid
   const tripsByDestination = typedTrips.reduce(
     (acc, trip) => {
       const destination = trip.destination;
@@ -75,7 +78,7 @@ export default async function ExplorePage() {
       acc[destination].push(trip);
       return acc;
     },
-    {} as Record<string, Trip[]>,
+    {} as Record<string, Trip[]>
   );
 
   return (
@@ -92,36 +95,8 @@ export default async function ExplorePage() {
             </p>
           </div>
 
-          {/* Map Placeholder */}
-          <Card className="mb-8">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5" />
-                Interactive Map
-              </CardTitle>
-              <CardDescription>
-                Interactive map with trip pins coming soon. For now, explore
-                destinations below.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="h-96 bg-gradient-to-br from-emerald-50 to-blue-50 rounded-lg flex items-center justify-center border-2 border-dashed border-emerald-200">
-                <div className="text-center">
-                  <Navigation className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-semibold text-emerald-700 mb-2">
-                    Interactive Map Coming Soon
-                  </h3>
-                  <p className="text-emerald-600 mb-4">
-                    We're working on an interactive map that will show all trip
-                    destinations as pins.
-                  </p>
-                  <p className="text-sm text-emerald-500">
-                    For now, explore the destinations and trips below.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Interactive Map */}
+          <ExploreMapSection trips={typedTrips} />
 
           {/* Destinations Grid */}
           <div className="mb-8">
@@ -152,10 +127,10 @@ export default async function ExplorePage() {
                   ([destination, destinationTrips]) => {
                     const totalSpots = destinationTrips.reduce(
                       (sum, trip) => sum + getAvailableSpots(trip),
-                      0,
+                      0
                     );
                     const upcomingTrips = destinationTrips.filter(
-                      (trip) => new Date(trip.start_date) > new Date(),
+                      (trip) => new Date(trip.start_date) > new Date()
                     ).length;
 
                     return (
@@ -223,7 +198,7 @@ export default async function ExplorePage() {
                                       <Users className="w-3 h-3" />
                                       <span>
                                         {trip.participants.filter(
-                                          (p) => p.status === "approved",
+                                          (p) => p.status === "approved"
                                         ).length + 1}
                                         /{trip.max_participants || 4}
                                       </span>
@@ -253,7 +228,7 @@ export default async function ExplorePage() {
                         </CardContent>
                       </Card>
                     );
-                  },
+                  }
                 )}
               </div>
             )}
@@ -291,3 +266,4 @@ export default async function ExplorePage() {
     </div>
   );
 }
+
