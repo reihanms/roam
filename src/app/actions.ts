@@ -172,7 +172,7 @@ export const updateProfileAction = async (formData: FormData) => {
   } = await supabase.auth.getUser();
 
   if (authError || !user) {
-    return encodedRedirect("error", "/profile", "Authentication required");
+    return encodedRedirect("error", "/dashboard/profile", "Authentication required");
   }
 
   // Update bio
@@ -183,7 +183,7 @@ export const updateProfileAction = async (formData: FormData) => {
 
   if (bioError) {
     console.error("Error updating bio:", bioError);
-    return encodedRedirect("error", "/profile", "Failed to update bio");
+    return encodedRedirect("error", "/dashboard/profile", "Failed to update bio");
   }
 
   // Update travel styles
@@ -205,13 +205,17 @@ export const updateProfileAction = async (formData: FormData) => {
       console.error("Error updating travel styles:", stylesError);
       return encodedRedirect(
         "error",
-        "/profile",
-        "Failed to update travel styles",
+        "/dashboard/profile",
+        "Failed to update travel styles"
       );
     }
   }
 
-  return encodedRedirect("success", "/profile", "Profile updated successfully");
+  return encodedRedirect(
+    "success",
+    "/dashboard/profile",
+    "Profile updated successfully"
+  );
 };
 
 export const createTripAction = async (formData: FormData) => {
