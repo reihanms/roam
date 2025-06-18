@@ -7,10 +7,15 @@ import {
   MapPin,
   Users,
   MessageCircle,
-  Shield,
+  ShieldCheck,
   Star,
-  Calendar,
   Globe,
+  Search,
+  Plane,
+  Heart,
+  Award,
+  MessagesSquare,
+  Map,
 } from "lucide-react";
 import { createClient } from "../../supabase/server";
 import {
@@ -20,294 +25,327 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { Badge } from "@/components/ui/badge";
 
 export default async function Home() {
   const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  await supabase.auth.getUser();
+  const { data: trips } = await supabase
+    .from("trips")
+    .select("id, title, destination, start_date, end_date")
+    .order("created_at", { ascending: false })
+    .limit(6);
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800">
-      <Navbar />
-      <Hero />
+    <>
+      <div className="min-h-screen bg-white text-gray-800">
+        <Navbar />
+        <Hero />
 
-      {/* Features Section */}
-      <section className="py-24 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">How Roam Works</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Connect with fellow travelers in three simple steps and start your
-              next adventure together.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                icon: <Globe className="w-6 h-6" />,
-                title: "Discover Trips",
-                description:
-                  "Browse amazing trips or create your own adventure",
-              },
-              {
-                icon: <Users className="w-6 h-6" />,
-                title: "Find Companions",
-                description:
-                  "Connect with verified travelers who share your interests",
-              },
-              {
-                icon: <MessageCircle className="w-6 h-6" />,
-                title: "Chat & Plan",
-                description: "Coordinate details in real-time group chats",
-              },
-              {
-                icon: <MapPin className="w-6 h-6" />,
-                title: "Travel Together",
-                description: "Create unforgettable memories with new friends",
-              },
-            ].map((feature, index) => (
-              <MotionDiv
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="hover:shadow-lg transition-shadow h-full">
-                  <CardHeader className="text-center">
-                    <div className="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
-                      <div className="text-emerald-600">{feature.icon}</div>
+        {/* How It Works Section */}
+        <section className="py-24">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-16">
+              <h2 className="text-4xl font-bold tracking-tight mb-4">
+                Your Adventure in 4 Easy Steps
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto text-lg">
+                We've simplified the process of finding your next travel story.
+              </p>
+            </div>
+            <div className="relative">
+              {/* Vertical Line */}
+              <div
+                className="absolute left-1/2 -ml-px w-0.5 h-full bg-gray-200 hidden md:block"
+                aria-hidden="true"
+              ></div>
+              <div className="space-y-16">
+                {[
+                  {
+                    icon: Search,
+                    title: "Discover Trips & People",
+                    description:
+                      "Use our powerful search to find adventures that match your interests, or post your own trip to attract the right crew.",
+                  },
+                  {
+                    icon: MessagesSquare,
+                    title: "Connect & Plan",
+                    description:
+                      "Chat with potential travel mates in our secure messaging system to align on plans, vibes, and expectations.",
+                  },
+                  {
+                    icon: Plane,
+                    title: "Book & Go",
+                    description:
+                      "Once your group is set, finalize your plans and get ready for an unforgettable experience. The world is waiting!",
+                  },
+                  {
+                    icon: Heart,
+                    title: "Share & Repeat",
+                    description:
+                      "Leave reviews, share memories, and stay connected with your new friends. Your next journey is just around the corner.",
+                  },
+                ].map((step, index) => (
+                  <div key={index} className="md:flex items-center w-full">
+                    <div className="md:w-1/2 md:pr-8">
+                      {index % 2 === 0 && (
+                        <MotionDiv
+                          initial={{ opacity: 0, x: -50 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5 }}
+                          className="text-center md:text-right"
+                        >
+                          <h3 className="text-2xl font-bold text-emerald-600 mb-2">
+                            {step.title}
+                          </h3>
+                          <p className="text-gray-600">{step.description}</p>
+                        </MotionDiv>
+                      )}
                     </div>
-                    <CardTitle className="text-xl">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-center">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </MotionDiv>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Features Grid */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Why Choose Roam</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Travel safely and confidently with our trusted community of
-              verified travelers.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                icon: <Shield className="w-8 h-8" />,
-                title: "Verified Profiles",
-                description:
-                  "All travelers go through our verification process for your safety and peace of mind.",
-              },
-              {
-                icon: <Star className="w-8 h-8" />,
-                title: "Review System",
-                description:
-                  "Read reviews from previous trips to make informed decisions about your travel companions.",
-              },
-              {
-                icon: <Calendar className="w-8 h-8" />,
-                title: "Flexible Planning",
-                description:
-                  "Create trips with flexible dates and budgets to find the perfect match for your schedule.",
-              },
-              {
-                icon: <MessageCircle className="w-8 h-8" />,
-                title: "Real-time Chat",
-                description:
-                  "Stay connected with your travel group through our built-in messaging system.",
-              },
-              {
-                icon: <MapPin className="w-8 h-8" />,
-                title: "Global Destinations",
-                description:
-                  "Discover trips to destinations worldwide, from popular hotspots to hidden gems.",
-              },
-              {
-                icon: <Users className="w-8 h-8" />,
-                title: "Community Driven",
-                description:
-                  "Join a community of passionate travelers who love exploring the world together.",
-              },
-            ].map((feature, index) => (
-              <MotionDiv
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="p-6 hover:shadow-lg transition-shadow h-full">
-                  <div className="text-emerald-600 mb-4">{feature.icon}</div>
-                  <h3 className="text-xl font-semibold mb-3">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-600">{feature.description}</p>
-                </Card>
-              </MotionDiv>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Testimonials Section */}
-      <section className="py-20 bg-emerald-600 text-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">What Travelers Say</h2>
-            <p className="text-emerald-100 max-w-2xl mx-auto">
-              Join thousands of travelers who have found their perfect travel
-              companions through Roam.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                quote:
-                  "I found the most amazing travel companions for my Southeast Asia trip. We're still friends and planning our next adventure!",
-                author: "Sarah M.",
-                location: "Thailand Trip",
-              },
-              {
-                quote:
-                  "Roam made it so easy to find people who shared my love for hiking. Our group trip to Patagonia was incredible.",
-                author: "Mike R.",
-                location: "Patagonia Adventure",
-              },
-              {
-                quote:
-                  "As a solo female traveler, I felt so much safer traveling with the verified companions I met through Roam.",
-                author: "Emma L.",
-                location: "Europe Backpacking",
-              },
-            ].map((testimonial, index) => (
-              <MotionDiv
-                key={index}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card className="bg-white/10 border-white/20 text-white h-full">
-                  <CardContent className="p-6">
-                    <div className="flex mb-4">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                        />
-                      ))}
+                    <div className="relative w-16 h-16 mx-auto my-4 md:my-0 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center shadow-lg">
+                      <step.icon className="w-8 h-8 text-emerald-600" />
                     </div>
-                    <p className="mb-4 italic">
-                      &quot;{testimonial.quote}&quot;
-                    </p>
-                    <div>
-                      <div className="font-semibold">{testimonial.author}</div>
-                      <div className="text-emerald-100 text-sm">
-                        {testimonial.location}
+                    <div className="md:w-1/2 md:pl-8">
+                      {index % 2 !== 0 && (
+                        <MotionDiv
+                          initial={{ opacity: 0, x: 50 }}
+                          whileInView={{ opacity: 1, x: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5 }}
+                          className="text-center md:text-left"
+                        >
+                          <h3 className="text-2xl font-bold text-emerald-600 mb-2">
+                            {step.title}
+                          </h3>
+                          <p className="text-gray-600">{step.description}</p>
+                        </MotionDiv>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Why Choose Roam Section */}
+        <section className="py-24 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-20">
+              <h2 className="text-4xl font-bold tracking-tight mb-4">
+                More Than a Platform, It's a Promise
+              </h2>
+              <p className="text-gray-600 max-w-3xl mx-auto text-lg">
+                We're committed to building a trusted, vibrant, and supportive
+                community for travelers worldwide. Here's what sets us apart.
+              </p>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[
+                {
+                  icon: ShieldCheck,
+                  title: "Safety First",
+                  description:
+                    "Our robust verification and review system creates a trusted environment for everyone.",
+                  gradient: "from-blue-100 to-blue-50",
+                },
+                {
+                  icon: Award,
+                  title: "Quality Connections",
+                  description:
+                    "We focus on compatibility, helping you find companions who truly share your travel style.",
+                  gradient: "from-purple-100 to-purple-50",
+                },
+                {
+                  icon: Globe,
+                  title: "Global Community",
+                  description:
+                    "Tap into a diverse network of passionate travelers and discover unique, user-hosted trips.",
+                  gradient: "from-teal-100 to-teal-50",
+                },
+                {
+                  icon: Users,
+                  title: "Community-Driven",
+                  description:
+                    "From flexible planning tools to integrated chat, our features are designed for group travel.",
+                  gradient: "from-orange-100 to-orange-50",
+                },
+                {
+                  icon: Map,
+                  title: "Endless Discovery",
+                  description:
+                    "Explore trips to every corner of the globe, from bustling cities to remote landscapes.",
+                  gradient: "from-green-100 to-green-50",
+                },
+                {
+                  icon: Heart,
+                  title: "Built on Trust",
+                  description:
+                    "We foster a culture of respect and transparency to ensure a positive experience for all.",
+                  gradient: "from-pink-100 to-pink-50",
+                },
+              ].map((feature, index) => (
+                <MotionDiv
+                  key={index}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="group"
+                >
+                  <div
+                    className={`relative p-8 rounded-2xl h-full overflow-hidden bg-white shadow-lg border border-gray-200/50 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1`}
+                  >
+                    <div
+                      className={`absolute -top-1/4 -right-1/4 w-60 h-60 bg-gradient-to-bl ${feature.gradient} rounded-full filter blur-3xl opacity-40 group-hover:opacity-60 transition-all duration-500`}
+                    ></div>
+                    <div className="relative">
+                      <div className="mb-4">
+                        <feature.icon className="w-10 h-10 text-gray-800" />
+                      </div>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed">
+                        {feature.description}
+                      </p>
+                    </div>
+                  </div>
+                </MotionDiv>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Discover Amazing Trips Section */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold tracking-tight mb-4">
+                Discover Your Next Destination
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto mb-8 text-lg">
+                Search for a specific place or browse our featured trips to get
+                inspired.
+              </p>
+              <div className="max-w-2xl mx-auto space-y-4 flex flex-col gap-2">
+                <form action="/trips" method="GET">
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Input
+                      type="text"
+                      name="destination"
+                      placeholder="Search for 'Thailand', 'Patagonia', 'Italy'..."
+                      className="w-full h-14 pl-12 pr-4 rounded-full border-gray-300 focus:ring-2 focus:ring-emerald-500 text-lg"
+                    />
+                    <Button
+                      type="submit"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 h-10 rounded-full px-6"
+                    >
+                      Search
+                    </Button>
+                  </div>
+                </form>
+                <span className="">OR</span>
+                <Link href="/explore">
+                  <Button
+                    variant="outline"
+                    className="h-10 rounded-full border-gray-300 hover:bg-gray-50"
+                  >
+                    <Map className="w-4 h-4 mr-2" />
+                    Explore Maps
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {trips?.map((trip, index) => (
+                <MotionDiv
+                  key={trip.id}
+                  initial={{ opacity: 0, y: 50 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Link href={`/dashboard/trips/${trip.id}`} className="h-full">
+                    <div className="rounded-xl shadow-lg group h-full flex flex-col bg-white border border-gray-200/80 hover:border-emerald-500/50 hover:shadow-emerald-100 transition-all duration-300">
+                      <div className="p-6 flex-grow">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="p-3 bg-emerald-100 rounded-full">
+                            <MapPin className="w-6 h-6 text-emerald-600" />
+                          </div>
+                          <div>
+                            <p className="text-gray-500 text-sm">Destination</p>
+                            <p className="font-bold text-lg text-gray-800">
+                              {trip.destination}
+                            </p>
+                          </div>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
+                          {trip.title}
+                        </h3>
+                      </div>
+                      <div className="px-6 py-4 bg-gray-50/70 border-t border-gray-100 flex justify-between items-center">
+                        <Badge variant="secondary">
+                          {new Date(trip.start_date).toLocaleDateString(
+                            "en-US",
+                            { month: "short", day: "numeric" }
+                          )}{" "}
+                          -{" "}
+                          {new Date(trip.end_date).toLocaleDateString("en-US", {
+                            month: "short",
+                            day: "numeric",
+                            year: "numeric",
+                          })}
+                        </Badge>
+                        <div className="flex items-center text-sm font-medium text-emerald-600 opacity-0 group-hover:opacity-100 group-hover:gap-2 transition-all duration-300">
+                          <span>View Trip</span>
+                          <ArrowUpRight className="w-4 h-4" />
+                        </div>
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
-              </MotionDiv>
-            ))}
+                  </Link>
+                </MotionDiv>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Trip Discovery Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Discover Amazing Trips</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-8">
-              Find your perfect travel companions and join exciting adventures
-              around the world.
-            </p>
-
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto mb-8">
-              <form action="/trips" method="GET" className="flex gap-4">
-                <div className="flex-1">
-                  <input
-                    type="text"
-                    name="destination"
-                    placeholder="Search destinations..."
-                    className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="px-8 py-3 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-medium"
+        {/* CTA Section */}
+        <section className="py-24 bg-white">
+          <div className="container mx-auto px-4">
+            <div className="bg-emerald-600 text-white rounded-xl shadow-2xl shadow-emerald-200 p-12 text-center">
+              <h2 className="text-4xl font-bold mb-4">
+                Your Next Adventure is Calling
+              </h2>
+              <p className="max-w-2xl mx-auto mb-8 text-emerald-100 text-lg">
+                Sign up today and start exploring a world of travel
+                possibilities. Your community awaits.
+              </p>
+              <Link href={user ? "/dashboard" : "/sign-up"}>
+                <Button
+                  size="lg"
+                  variant="secondary"
+                  className="text-lg px-8 py-6 bg-white text-emerald-700 hover:bg-emerald-50"
                 >
-                  Search
-                </button>
-              </form>
-            </div>
-
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/trips"
-                className="inline-flex items-center px-6 py-3 text-emerald-600 bg-white border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
-              >
-                Browse All Trips
-              </a>
-              <a
-                href="/explore"
-                className="inline-flex items-center px-6 py-3 text-emerald-600 bg-white border border-emerald-600 rounded-lg hover:bg-emerald-50 transition-colors font-medium"
-              >
-                <MapPin className="mr-2 w-4 h-4" />
-                Explore Map
-              </a>
+                  Join Roam for Free
+                  <ArrowUpRight className="ml-2 w-5 h-5" />
+                </Button>
+              </Link>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* CTA Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">
-            Ready for Your Next Adventure?
-          </h2>
-          <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-            Join our community of travelers and discover your next unforgettable
-            journey. Your perfect travel companion is waiting.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/dashboard"
-              className="inline-flex items-center px-8 py-4 text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors text-lg font-medium"
-            >
-              Start Your Journey
-              <ArrowUpRight className="ml-2 w-5 h-5" />
-            </a>
-            <a
-              href="#how-it-works"
-              className="inline-flex items-center px-8 py-4 text-emerald-600 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors text-lg font-medium"
-            >
-              Learn More
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <Footer />
-    </div>
+        <Footer />
+      </div>
+    </>
   );
 }
 
