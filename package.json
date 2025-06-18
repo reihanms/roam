@@ -40,7 +40,7 @@
     "react-leaflet": "^4.2.1",
     "react-resizable-panels": "^2.1.7",
     "stripe": "^17.6.0",
-    "tempo-devtools": "^2.0.106",
+    "tempo-devtools": "^2.0.108",
     "vaul": "^1.1.2"
   },
   "devDependencies": {
