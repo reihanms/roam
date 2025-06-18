@@ -85,22 +85,22 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link href="/sign-in">
+              <Link href="/sign-in" passHref>
                 <Button
                   variant="ghost"
-                  className={isTransparent ? "text-white hover:text-white" : ""}
+                  className={
+                    isTransparent
+                      ? "text-white hover:bg-white/10 hover:text-white"
+                      : ""
+                  }
                 >
                   Sign In
                 </Button>
               </Link>
-              <Link href="/sign-up">
+              <Link href="/sign-up" passHref>
                 <Button
                   variant={isTransparent ? "outline" : "default"}
-                  className={
-                    isTransparent
-                      ? "text-white border-white hover:bg-white hover:text-black"
-                      : ""
-                  }
+                  className={isTransparent ? "bg-white/10 text-white" : ""}
                 >
                   Sign Up
                 </Button>
