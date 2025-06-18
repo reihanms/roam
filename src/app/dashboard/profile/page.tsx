@@ -16,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star, MapPin, Calendar, Users } from "lucide-react";
 import { updateProfileAction } from "@/app/actions";
 import DashboardNavbar from "@/components/dashboard-navbar";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface TravelStyle {
   id: string;
@@ -215,21 +216,25 @@ export default async function ProfilePage() {
                   <label className="text-sm font-medium">Travel Styles</label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
                     {allTravelStyles?.map((style) => (
-                      <label
+                      <div
                         key={style.id}
-                        className="flex items-center space-x-2 cursor-pointer"
+                        className="flex items-center space-x-2"
                       >
-                        <input
-                          type="checkbox"
+                        <Checkbox
+                          id={style.id}
                           name="travel_styles"
                           value={style.id}
                           defaultChecked={selectedTravelStyleIds.includes(
                             style.id
                           )}
-                          className="rounded border-gray-300"
                         />
-                        <span className="text-sm">{style.name}</span>
-                      </label>
+                        <label
+                          htmlFor={style.id}
+                          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                        >
+                          {style.name}
+                        </label>
+                      </div>
                     ))}
                   </div>
                 </div>
