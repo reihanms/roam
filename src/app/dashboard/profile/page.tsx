@@ -1,52 +1,14 @@
-import { redirect } from "next/navigation";
-import { createClient } from "../../../../supabase/server";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Star, MapPin, Calendar, Users } from "lucide-react";
 import { updateProfileAction } from "@/app/actions";
 import DashboardNavbar from "@/components/dashboard-navbar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
-
-interface TravelStyle {
-  id: string;
-  name: string;
-}
-
-interface UserTravelStyle {
-  travel_style_id: string;
-  travel_styles: TravelStyle | null;
-}
-
-interface Trip {
-  id: string;
-  title: string;
-  destination: string;
-  start_date: string;
-  end_date: string;
-  max_participants: number;
-  host_id: string;
-  trip_participants: { user_id: string; status: string }[];
-}
-
-interface Review {
-  id: string;
-  rating: number;
-  comment: string;
-  created_at: string;
-  reviewer_id: string;
-  users: { name: string; full_name: string };
-}
+import { Textarea } from "@/components/ui/textarea";
+import { Calendar, MapPin, Star, Users } from "lucide-react";
+import { redirect } from "next/navigation";
+import { createClient } from "../../../../supabase/server";
 
 export default async function ProfilePage() {
   const supabase = await createClient();

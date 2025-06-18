@@ -1,34 +1,25 @@
 import Footer from "@/components/footer";
 import Hero from "@/components/hero";
-import Navbar from "@/components/navbar";
 import { MotionDiv } from "@/components/motion-div";
+import Navbar from "@/components/navbar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   ArrowUpRight,
-  MapPin,
-  Users,
-  MessageCircle,
-  ShieldCheck,
-  Star,
-  Globe,
-  Search,
-  Plane,
-  Heart,
   Award,
-  MessagesSquare,
+  Globe,
+  Heart,
   Map,
+  MapPin,
+  MessagesSquare,
+  Plane,
+  Search,
+  ShieldCheck,
+  Users,
 } from "lucide-react";
-import { createClient } from "../../supabase/server";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { Badge } from "@/components/ui/badge";
+import { createClient } from "../../supabase/server";
 
 export default async function Home() {
   const supabase = await createClient();
