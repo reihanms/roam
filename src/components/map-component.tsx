@@ -15,9 +15,13 @@ interface ExtendedTrip extends Tables<"trips"> {
 
 interface MapComponentProps {
   trips: ExtendedTrip[];
+  className?: string;
 }
 
-export default function MapComponent({ trips }: MapComponentProps) {
+export default function MapComponent({
+  trips,
+  className = "h-96",
+}: MapComponentProps) {
   const [icon, setIcon] = useState<any>(null);
 
   useEffect(() => {
@@ -56,14 +60,16 @@ export default function MapComponent({ trips }: MapComponentProps) {
 
   if (!icon) {
     return (
-      <div className="h-[500px] w-full rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100">
+      <div
+        className={`${className} w-full rounded-lg border overflow-hidden flex items-center justify-center bg-gray-100`}
+      >
         <p className="text-gray-500">Loading map...</p>
       </div>
     );
   }
 
   return (
-    <div className="h-[500px] w-full rounded-lg border overflow-hidden">
+    <div className={`${className} w-full rounded-lg border overflow-hidden`}>
       <MapContainer
         center={getMapCenter() as [number, number]}
         zoom={getZoomLevel()}
@@ -100,9 +106,10 @@ export default function MapComponent({ trips }: MapComponentProps) {
                 </div>
               </Popup>
             </Marker>
-          ) : null,
+          ) : null
         )}
       </MapContainer>
     </div>
   );
 }
+

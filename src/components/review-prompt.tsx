@@ -112,13 +112,13 @@ export default function ReviewPrompt({
 
     // Filter out users already reviewed
     const pendingUsers = usersToReview.filter(
-      (u) => !reviewedUserIds.includes(u.id),
+      (u) => !reviewedUserIds.includes(u.id)
     );
 
     if (pendingUsers.length > 0) {
       setReviewableUsers(pendingUsers);
       setPendingReviews(
-        pendingUsers.map((u) => ({ userId: u.id, rating: 0, comment: "" })),
+        pendingUsers.map((u) => ({ userId: u.id, rating: 0, comment: "" }))
       );
       setShowPrompt(true);
     }
@@ -127,12 +127,12 @@ export default function ReviewPrompt({
   const updateReview = (
     userId: string,
     field: "rating" | "comment",
-    value: number | string,
+    value: number | string
   ) => {
     setPendingReviews((prev) =>
       prev.map((review) =>
-        review.userId === userId ? { ...review, [field]: value } : review,
-      ),
+        review.userId === userId ? { ...review, [field]: value } : review
+      )
     );
   };
 
@@ -279,3 +279,4 @@ export default function ReviewPrompt({
     </Dialog>
   );
 }
+

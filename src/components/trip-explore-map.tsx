@@ -28,9 +28,6 @@ interface TripExploreMapProps {
 }
 
 export function TripExploreMap({ trips, className = "" }: TripExploreMapProps) {
-  return (
-    <div className={className}>
-      <MapComponent trips={trips} />
-    </div>
-  );
+  return <MapComponent trips={trips} className={className} />;
 }
+

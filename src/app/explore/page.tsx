@@ -9,14 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import {
-  CalendarDays,
-  MapPin,
-  Users,
-  DollarSign,
-  Navigation,
-  Globe,
-} from "lucide-react";
+import { CalendarDays, MapPin, Users } from "lucide-react";
 import { createClient } from "../../../supabase/server";
 import { Tables } from "@/types/supabase";
 import Link from "next/link";
