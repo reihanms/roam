@@ -105,9 +105,9 @@ export default async function ProfilePage() {
     .eq("user_id", user.id)
     .eq("status", "approved");
 
-  // Fetch reviews received by the user
+  // Fetch visible reviews received by the user
   const { data: reviews } = await supabase
-    .from("reviews")
+    .from("visible_reviews")
     .select(
       `
       *,
