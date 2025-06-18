@@ -1,8 +1,6 @@
 import { manageTripRequestAction, joinTripAction } from "@/app/actions";
 import DashboardNavbar from "@/components/dashboard-navbar";
 import Chat from "@/components/chat";
-import ReviewPrompt from "@/components/review-prompt";
-import TripReviewSection from "@/components/trip-review-section";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -61,7 +59,7 @@ export default async function TripDetailsPage({
         *,
         user:users(*)
       )
-    `,
+    `
     )
     .eq("id", params.tripId)
     .single();
@@ -73,13 +71,13 @@ export default async function TripDetailsPage({
   const typedTrip = trip as Trip;
   const isHost = user.id === typedTrip.host_id;
   const userParticipation = typedTrip.participants.find(
-    (p) => p.user_id === user.id,
+    (p) => p.user_id === user.id
   );
   const pendingRequests = typedTrip.participants.filter(
-    (p) => p.status === "pending",
+    (p) => p.status === "pending"
   );
   const approvedParticipants = typedTrip.participants.filter(
-    (p) => p.status === "approved",
+    (p) => p.status === "approved"
   );
   const isApprovedParticipant = userParticipation?.status === "approved";
   const hasAccessToChat = isHost || isApprovedParticipant;
@@ -168,7 +166,7 @@ export default async function TripDetailsPage({
                         <p className="text-sm text-muted-foreground">
                           {formatBudget(
                             typedTrip.budget_min,
-                            typedTrip.budget_max,
+                            typedTrip.budget_max
                           )}
                         </p>
                       </div>
@@ -291,7 +289,7 @@ export default async function TripDetailsPage({
                             <p className="text-xs text-muted-foreground">
                               Joined{" "}
                               {new Date(
-                                participant.joined_at || "",
+                                participant.joined_at || ""
                               ).toLocaleDateString()}
                             </p>
                           </div>
@@ -330,7 +328,7 @@ export default async function TripDetailsPage({
                               <p className="text-xs text-muted-foreground">
                                 Requested{" "}
                                 {new Date(
-                                  request.joined_at || "",
+                                  request.joined_at || ""
                                 ).toLocaleDateString()}
                               </p>
                             </div>
@@ -398,31 +396,11 @@ export default async function TripDetailsPage({
                   </CardContent>
                 </Card>
               )}
-
-              {/* Trip Review Section */}
-              <TripReviewSection
-                tripId={params.tripId}
-                currentUserId={user.id}
-                participants={typedTrip.participants}
-                host={typedTrip.host}
-                hostId={typedTrip.host_id!}
-                isHost={isHost}
-                isApprovedParticipant={isApprovedParticipant}
-              />
             </div>
           </div>
         </div>
-
-        {/* Review Prompt */}
-        <ReviewPrompt
-          tripId={params.tripId}
-          currentUserId={user.id}
-          participants={typedTrip.participants}
-          host={typedTrip.host}
-          hostId={typedTrip.host_id!}
-          tripEndDate={typedTrip.end_date}
-        />
       </main>
     </div>
   );
 }
+
