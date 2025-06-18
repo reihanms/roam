@@ -1,6 +1,7 @@
 import Footer from "@/components/footer";
 import Hero from "@/components/hero";
 import Navbar from "@/components/navbar";
+import { MotionDiv } from "@/components/motion-div";
 import {
   ArrowUpRight,
   MapPin,
@@ -26,7 +27,7 @@ export default async function Home() {
   await supabase.auth.getUser();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
+    <div className="min-h-screen bg-gray-50 text-gray-800">
       <Navbar />
       <Hero />
 
@@ -66,19 +67,27 @@ export default async function Home() {
                 description: "Create unforgettable memories with new friends",
               },
             ].map((feature, index) => (
-              <Card key={index} className="hover:shadow-lg transition-shadow">
-                <CardHeader className="text-center">
-                  <div className="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
-                    <div className="text-emerald-600">{feature.icon}</div>
-                  </div>
-                  <CardTitle className="text-xl">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-center">
-                    {feature.description}
-                  </CardDescription>
-                </CardContent>
-              </Card>
+              <MotionDiv
+                key={index}
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <Card className="hover:shadow-lg transition-shadow h-full">
+                  <CardHeader className="text-center">
+                    <div className="mx-auto w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center mb-4">
+                      <div className="text-emerald-600">{feature.icon}</div>
+                    </div>
+                    <CardTitle className="text-xl">{feature.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-center">
+                      {feature.description}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -134,14 +143,21 @@ export default async function Home() {
                   "Join a community of passionate travelers who love exploring the world together.",
               },
             ].map((feature, index) => (
-              <Card
+              <MotionDiv
                 key={index}
-                className="p-6 hover:shadow-lg transition-shadow"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <div className="text-emerald-600 mb-4">{feature.icon}</div>
-                <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
-              </Card>
+                <Card className="p-6 hover:shadow-lg transition-shadow h-full">
+                  <div className="text-emerald-600 mb-4">{feature.icon}</div>
+                  <h3 className="text-xl font-semibold mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600">{feature.description}</p>
+                </Card>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -179,28 +195,35 @@ export default async function Home() {
                 location: "Europe Backpacking",
               },
             ].map((testimonial, index) => (
-              <Card
+              <MotionDiv
                 key={index}
-                className="bg-white/10 border-white/20 text-white"
+                initial={{ opacity: 0, y: 50 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
               >
-                <CardContent className="p-6">
-                  <div className="flex mb-4">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                      />
-                    ))}
-                  </div>
-                  <p className="mb-4 italic">&quot;{testimonial.quote}&quot;</p>
-                  <div>
-                    <div className="font-semibold">{testimonial.author}</div>
-                    <div className="text-emerald-100 text-sm">
-                      {testimonial.location}
+                <Card className="bg-white/10 border-white/20 text-white h-full">
+                  <CardContent className="p-6">
+                    <div className="flex mb-4">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                        />
+                      ))}
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                    <p className="mb-4 italic">
+                      &quot;{testimonial.quote}&quot;
+                    </p>
+                    <div>
+                      <div className="font-semibold">{testimonial.author}</div>
+                      <div className="text-emerald-100 text-sm">
+                        {testimonial.location}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </MotionDiv>
             ))}
           </div>
         </div>
