@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -130,7 +129,7 @@ export default function TripReviewSection({
 
   const updateReview = (
     field: "rating" | "comment",
-    value: number | string,
+    value: number | string
   ) => {
     setNewReview((prev) => ({ ...prev, [field]: value }));
   };
@@ -169,7 +168,7 @@ export default function TripReviewSection({
 
   const renderStarRating = (
     currentRating: number,
-    interactive: boolean = true,
+    interactive: boolean = true
   ) => {
     return (
       <div className="flex gap-1">
@@ -291,3 +290,4 @@ export default function TripReviewSection({
     </>
   );
 }
+

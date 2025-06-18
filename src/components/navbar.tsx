@@ -1,7 +1,7 @@
 import Link from "next/link";
-import { createClient } from "../../supabase/server";
 import { Button } from "./ui/button";
-import { User, UserCircle, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { createClient } from "../../supabase/server";
 import UserProfile from "./user-profile";
 
 export default async function Navbar() {
@@ -54,3 +54,4 @@ export default async function Navbar() {
     </nav>
   );
 }
+

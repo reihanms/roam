@@ -8,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   Card,
@@ -57,7 +56,6 @@ export default function ReviewPrompt({
   const [reviewableUsers, setReviewableUsers] = useState<ReviewableUser[]>([]);
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [existingReviews, setExistingReviews] = useState<string[]>([]);
 
   const supabase = createClient();
 
@@ -99,7 +97,6 @@ export default function ReviewPrompt({
         }
       });
 
-    // Check which reviews have already been submitted
     const { data: existingReviewsData } = await supabase
       .from("reviews")
       .select("reviewee_id")
@@ -108,7 +105,6 @@ export default function ReviewPrompt({
 
     const reviewedUserIds =
       existingReviewsData?.map((r) => r.reviewee_id) || [];
-    setExistingReviews(reviewedUserIds);
 
     // Filter out users already reviewed
     const pendingUsers = usersToReview.filter(

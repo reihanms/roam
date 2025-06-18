@@ -1,4 +1,3 @@
-import { searchTripsAction } from "@/app/actions";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -60,7 +59,7 @@ export default async function TripsPage({
       *,
       host:users!trips_host_id_fkey(full_name, name),
       participants:trip_participants(id, status)
-    `,
+    `
     )
     .gte("start_date", new Date().toISOString().split("T")[0]);
 
@@ -74,8 +73,13 @@ export default async function TripsPage({
     query = query.order("created_at", { ascending: false });
   }
 
-  const { data: trips, error } = await query.limit(20);
-  const typedTrips = (trips || []) as Trip[];
+  if (searchParams.destination) {
+    query = query.textSearch("title", searchParams.destination);
+  }
+
+  const { data: trips } = await query.limit(20);
+
+  const typedTrips = (trips as Trip[]) || [];
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -95,7 +99,7 @@ export default async function TripsPage({
 
   const getAvailableSpots = (trip: Trip) => {
     const approvedParticipants = trip.participants.filter(
-      (p) => p.status === "approved",
+      (p) => p.status === "approved"
     ).length;
     return (trip.max_participants || 4) - approvedParticipants - 1; // -1 for host
   };
@@ -239,7 +243,7 @@ export default async function TripsPage({
                           <Users className="w-4 h-4 text-muted-foreground" />
                           <span>
                             {trip.participants.filter(
-                              (p) => p.status === "approved",
+                              (p) => p.status === "approved"
                             ).length + 1}{" "}
                             / {trip.max_participants || 4} travelers
                           </span>
@@ -280,3 +284,4 @@ export default async function TripsPage({
     </div>
   );
 }
+

@@ -538,30 +538,40 @@ export const sendMessageAction = async (formData: FormData) => {
   }
 
   // Verify user has access to this chat room (is participant or host)
-  const { data: chatRoom } = await supabase
+  const { data: chatRoom, error: chatRoomError } = await supabase
     .from("chat_rooms")
     .select(
       `
-      trip_id,
-      trip:trips(
-        host_id,
-        participants:trip_participants(
-          user_id,
-          status
-        )
-      )
-    `,
+      id,
+      trips (*)
+    `
     )
     .eq("id", chatRoomId)
     .single();
 
-  if (!chatRoom?.trip) {
+  if (chatRoomError || !chatRoom || !chatRoom.trips) {
+    console.error("Chat room or trip not found:", chatRoomError);
     return encodedRedirect("error", "/dashboard", "Chat room not found");
   }
 
-  const isHost = chatRoom.trip.host_id === user.id;
-  const isApprovedParticipant = chatRoom.trip.participants?.some(
-    (p: any) => p.user_id === user.id && p.status === "approved",
+  const trip = Array.isArray(chatRoom.trips)
+    ? chatRoom.trips[0]
+    : chatRoom.trips;
+
+  if (!trip) {
+    console.error("Trip data is missing in chat room");
+    return encodedRedirect("error", "/dashboard", "Trip not found");
+  }
+
+  // We need to fetch participants separately as nested queries can be tricky
+  const { data: participants } = await supabase
+    .from("trip_participants")
+    .select("user_id, status")
+    .eq("trip_id", trip.id);
+
+  const isHost = trip.host_id === user.id;
+  const isApprovedParticipant = participants?.some(
+    (p) => p.user_id === user.id && p.status === "approved"
   );
 
   if (!isHost && !isApprovedParticipant) {

@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
   )
 
   // Refresh session if expired - required for Server Components
-  const { data: { session }, error } = await supabase.auth.getSession()
+  const { data: error } = await supabase.auth.getSession()
 
   if (error) {
     console.error('Auth session error:', error)

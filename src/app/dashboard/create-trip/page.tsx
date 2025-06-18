@@ -20,8 +20,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { LocationSearch } from "@/components/ui/location-search";
 import { useRef } from "react";
+import dynamic from "next/dynamic";
+
+const LocationSearch = dynamic(
+  () =>
+    import("@/components/ui/location-search").then((mod) => mod.LocationSearch),
+  {
+    ssr: false,
+    loading: () => <p>Loading map...</p>,
+  }
+);
 
 export default function CreateTripPage() {
   const formRef = useRef<HTMLFormElement>(null);

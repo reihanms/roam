@@ -31,7 +31,7 @@ export default async function ExplorePage() {
   } = await supabase.auth.getUser();
 
   // Fetch upcoming trips for both map and destinations list
-  const { data: trips, error } = await supabase
+  const { data: trips } = await supabase
     .from("trips")
     .select(
       `
@@ -122,9 +122,9 @@ export default async function ExplorePage() {
                       (sum, trip) => sum + getAvailableSpots(trip),
                       0
                     );
-                    const upcomingTrips = destinationTrips.filter(
+                    destinationTrips.filter(
                       (trip) => new Date(trip.start_date) > new Date()
-                    ).length;
+                    );
 
                     return (
                       <Card

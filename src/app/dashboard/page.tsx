@@ -20,6 +20,12 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
+type Participant = {
+  id: string;
+  status: string;
+  user_id: string;
+};
+
 export default async function Dashboard() {
   const supabase = await createClient();
 
@@ -42,7 +48,7 @@ export default async function Dashboard() {
         status,
         user_id
       )
-    `,
+    `
     )
     .eq("host_id", user.id)
     .order("created_at", { ascending: false })
@@ -58,7 +64,7 @@ export default async function Dashboard() {
         *,
         host:users!trips_host_id_fkey(full_name, name)
       )
-    `,
+    `
     )
     .eq("user_id", user.id)
     .eq("status", "approved")
@@ -141,8 +147,9 @@ export default async function Dashboard() {
                 <div className="text-2xl font-bold">
                   {userTrips?.reduce((acc, trip) => {
                     const pendingCount =
-                      trip.participants?.filter((p) => p.status === "pending")
-                        .length || 0;
+                      trip.participants?.filter(
+                        (p: Participant) => p.status === "pending"
+                      ).length || 0;
                     return acc + pendingCount;
                   }, 0) || 0}
                 </div>
@@ -168,11 +175,13 @@ export default async function Dashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {userTrips.map((trip) => {
                   const pendingCount =
-                    trip.participants?.filter((p) => p.status === "pending")
-                      .length || 0;
+                    trip.participants?.filter(
+                      (p: Participant) => p.status === "pending"
+                    ).length || 0;
                   const approvedCount =
-                    trip.participants?.filter((p) => p.status === "approved")
-                      .length || 0;
+                    trip.participants?.filter(
+                      (p: Participant) => p.status === "approved"
+                    ).length || 0;
 
                   return (
                     <Card
@@ -320,3 +329,4 @@ export default async function Dashboard() {
     </>
   );
 }
+
