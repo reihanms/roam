@@ -8,6 +8,7 @@ import { createClient } from "../../supabase/client";
 import UserProfile from "./user-profile";
 import { usePathname } from "next/navigation";
 import { User } from "@supabase/supabase-js";
+import Image from "next/image";
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -59,14 +60,12 @@ export default function Navbar() {
           prefetch
           className="text-xl font-bold flex items-center gap-2"
         >
-          <MapPin
-            className={`w-6 h-6 transition-colors ${
-              isTransparent ? "text-white" : "text-emerald-600"
-            }`}
+          <Image
+            src={isTransparent ? "/logo-white.png" : "/logo.png"}
+            alt="Roam logo"
+            width={60}
+            height={60}
           />
-          <span className={isTransparent ? "text-white" : "text-gray-900"}>
-            Roam
-          </span>
         </Link>
         <div className="hidden md:flex gap-2 items-center">
           <Link href="/how-it-works" passHref>

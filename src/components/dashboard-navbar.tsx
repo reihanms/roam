@@ -11,6 +11,7 @@ import {
 import { Button } from "./ui/button";
 import { UserCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function DashboardNavbar() {
   const supabase = createClient();
@@ -21,7 +22,7 @@ export default function DashboardNavbar() {
       <div className="container mx-auto px-4 flex justify-between items-center">
         <div className="flex items-center gap-4">
           <Link href="/dashboard" prefetch className="text-xl font-bold">
-            Roam
+            <Image src="/logo.png" alt="Roam logo" width={50} height={50} />
           </Link>
         </div>
         <div className="flex gap-4 items-center">
