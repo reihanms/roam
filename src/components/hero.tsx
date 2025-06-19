@@ -1,14 +1,8 @@
 "use client";
 
-import Link from "next/link";
-import {
-  ArrowUpRight,
-  Check,
-  MapPin,
-  Users,
-  MessageCircle,
-} from "lucide-react";
 import { motion } from "framer-motion";
+import { ArrowUpRight, Check } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   const containerVariants = {
@@ -104,44 +98,19 @@ export default function Hero() {
               className="mt-16 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-gray-400"
               variants={itemVariants}
             >
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-400" />
+              <div className="flex items-center gap-2 text-white">
+                <Check className="w-5 h-5" />
                 <span>Free to join</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-400" />
+              <div className="flex items-center gap-2 text-white">
+                <Check className="w-5 h-5" />
                 <span>Verified travelers</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-emerald-400" />
+              <div className="flex items-center gap-2 text-white">
+                <Check className="w-5 h-5" />
                 <span>Safe & secure</span>
               </div>
             </motion.div>
-
-            {/* Quick stats */}
-            <div className="mt-20 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-2xl mx-auto">
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-12 h-12 bg-emerald-100 rounded-full mb-3">
-                  <Users className="w-6 h-6 text-emerald-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900">10K+</div>
-                <div className="text-sm text-gray-600">Active Travelers</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-12 h-12 bg-blue-100 rounded-full mb-3">
-                  <MapPin className="w-6 h-6 text-blue-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900">500+</div>
-                <div className="text-sm text-gray-600">Destinations</div>
-              </div>
-              <div className="flex flex-col items-center">
-                <div className="flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-3">
-                  <MessageCircle className="w-6 h-6 text-purple-600" />
-                </div>
-                <div className="text-2xl font-bold text-gray-900">25K+</div>
-                <div className="text-sm text-gray-600">Connections Made</div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
