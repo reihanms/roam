@@ -68,6 +68,44 @@ export default function Navbar() {
             Roam
           </span>
         </Link>
+        <div className="hidden md:flex gap-2 items-center">
+          <Link href="/how-it-works" passHref>
+            <Button
+              variant="link"
+              className={
+                isTransparent
+                  ? "text-white hover:text-white/80"
+                  : "text-slate-700"
+              }
+            >
+              How it works
+            </Button>
+          </Link>
+          <Link href="/explore" passHref>
+            <Button
+              variant="link"
+              className={
+                isTransparent
+                  ? "text-white hover:text-white/80"
+                  : "text-slate-700"
+              }
+            >
+              Explore
+            </Button>
+          </Link>
+          <Link href="/trips" passHref>
+            <Button
+              variant="link"
+              className={
+                isTransparent
+                  ? "text-white hover:text-white/80"
+                  : "text-slate-700"
+              }
+            >
+              Trips
+            </Button>
+          </Link>
+        </div>
         <div className="flex gap-2 items-center h-10">
           {loading ? (
             <div className="flex gap-2">

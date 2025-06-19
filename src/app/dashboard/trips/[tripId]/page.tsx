@@ -19,6 +19,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "../../../../../supabase/server";
 import { Tables } from "@/types/supabase";
 import { TripExploreMap } from "@/components/trip-explore-map";
+import DestinationImages from "@/components/destination-images";
 
 type Trip = Tables<"trips"> & {
   host: Tables<"users"> | null;
@@ -98,7 +99,7 @@ export default async function TripDetailsPage({
     <div className="bg-background min-h-screen">
       <DashboardNavbar />
       <main className="container mx-auto px-4 py-8">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="space-y-8">
           {/* Trip Header */}
           <div className="space-y-4">
             <div className="flex items-start justify-between">
@@ -416,6 +417,19 @@ export default async function TripDetailsPage({
           hostId={typedTrip.host_id!}
           tripEndDate={typedTrip.end_date}
         />
+
+        {/* Destination Photos */}
+        {typedTrip.latitude && typedTrip.longitude && (
+          <div className="w-full my-8 space-y-4">
+            <div className="container mx-auto px-4">
+              <h2 className="text-2xl font-bold">Destination Photos</h2>
+            </div>
+            <DestinationImages
+              latitude={typedTrip.latitude}
+              longitude={typedTrip.longitude}
+            />
+          </div>
+        )}
       </main>
     </div>
   );
