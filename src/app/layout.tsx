@@ -12,7 +12,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Roam",
+  title: "Roam - Travel Together",
   description:
     "Roam is a travel platform for travelers to find and create trips with other travelers.",
 };
