@@ -193,9 +193,6 @@ export default function CreateTripPage() {
                   <Button type="submit" className="flex-1">
                     Create Trip
                   </Button>
-                  <Button type="button" variant="outline" className="flex-1">
-                    Save as Draft
-                  </Button>
                 </div>
               </form>
             </CardContent>

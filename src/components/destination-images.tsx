@@ -33,9 +33,10 @@ export default function DestinationImages({
           `/api/geocode?lat=${latitude}&lon=${longitude}`
         );
         const geoData = await geoResponse.json();
+
         const locationName =
-          geoData.features[0]?.properties.city ||
-          geoData.features[0]?.properties.country;
+          geoData.features[0]?.properties.county ||
+          geoData.features[0]?.properties.city;
 
         if (locationName) {
           const unsplashResponse = await fetch(
