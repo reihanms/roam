@@ -243,6 +243,12 @@ export default async function Dashboard() {
             <section>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-semibold">Trips I've Joined</h2>
+                <Link
+                  href="/dashboard/joined-trips"
+                  className="text-sm text-primary hover:underline"
+                >
+                  View all
+                </Link>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {joinedTrips.map((participation) => {

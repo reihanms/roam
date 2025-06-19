@@ -62,8 +62,8 @@ export default function Navbar() {
           <Image
             src={isTransparent ? "/logo-white.png" : "/logo.png"}
             alt="Roam logo"
-            width={60}
-            height={60}
+            width={50}
+            height={50}
           />
         </Link>
         <div className="hidden md:flex gap-2 items-center">
