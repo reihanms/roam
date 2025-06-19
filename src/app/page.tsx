@@ -84,7 +84,7 @@ export default async function Home() {
                   },
                 ].map((step, index) => (
                   <div key={index} className="md:flex items-center w-full">
-                    <div className="md:w-1/2 md:pr-8">
+                    <div className="md:w-1/2 md:pr-8 overflow-hidden">
                       {index % 2 === 0 && (
                         <MotionDiv
                           initial={{ opacity: 0, x: -50 }}
@@ -103,7 +103,7 @@ export default async function Home() {
                     <div className="relative w-16 h-16 mx-auto my-4 md:my-0 bg-white rounded-full border-2 border-gray-200 flex items-center justify-center shadow-lg">
                       <step.icon className="w-8 h-8 text-emerald-600" />
                     </div>
-                    <div className="md:w-1/2 md:pl-8">
+                    <div className="md:w-1/2 md:pl-8 overflow-hidden">
                       {index % 2 !== 0 && (
                         <MotionDiv
                           initial={{ opacity: 0, x: 50 }}
