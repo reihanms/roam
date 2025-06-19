@@ -119,7 +119,7 @@ export default function Navbar() {
                   Dashboard
                 </Button>
               </Link>
-              <UserProfile />
+              <UserProfile isTransparent={isTransparent} />
             </>
           ) : (
             <>

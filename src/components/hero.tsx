@@ -93,8 +93,8 @@ export default function Hero() {
               </Link>
 
               <Link
-                href="#how-it-works"
-                className="inline-flex items-center px-8 py-4 text-gray-800 bg-white rounded-lg hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 text-lg font-medium"
+                href="/how-it-works"
+                className="inline-flex items-center px-8 py-4 text-white bg-transparent border border-emerald-400 rounded-lg transition-all duration-300 transform hover:scale-105 text-lg font-medium"
               >
                 How It Works
               </Link>
